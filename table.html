@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unite 2025 - Registration Summary</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #444;
+      text-align: center;
+    }
+
+    th {
+      background: #262626;
+      font-weight: bold;
+    }
+
+    td button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+    }
+
+    .add-btn {
+      background: linear-gradient(90deg, #28a745, #00c851);
+    }
+
+    .delete-btn {
+      background: linear-gradient(90deg, #ff4444, #cc0000);
+    }
+
+    .pay-btn {
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      padding: 15px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      float: right;
+      margin-top: 10px;
+      box-shadow: 0 0 15px rgba(255,106,0,0.7);
+    }
+
+    .total {
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: right;
+      margin-bottom: 10px;
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Registration Summary</h1>
+  <div class="total">Total Amount: ₹<span id="totalAmount">0</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Team ID</th>
+        <th>College</th>
+        <th>Event Name</th>
+        <th>Participants</th>
+        <th>Fee</th>
+        <th>Add Event</th>
+        <th>Delete Event</th>
+      </tr>
+    </thead>
+    <tbody id="summaryTableBody">
+      <!-- Dynamic rows here -->
+    </tbody>
+  </table>
+  <button class="pay-btn" onclick="payNow()">Click to Pay</button>
+</div>
+
+<script>
+  // ===== Helper functions =====
+  function generateTeamID() {
+    return Math.floor(100 + Math.random() * 900); // 3-digit ID
+  }
+
+  function getRegistrations() {
+    const data = JSON.parse(localStorage.getItem("registrations") || "[]");
+    return data;
+  }
+
+  function saveRegistrations(data) {
+    localStorage.setItem("registrations", JSON.stringify(data));
+  }
+
+  function renderTable() {
+  const tbody = document.getElementById("summaryTableBody");
+  tbody.innerHTML = "";
+  const data = getRegistrations();
+  let total = 0;
+
+  data.forEach((entry, index) => {
+    total += Number(entry.fee);
+    const participants = Array.isArray(entry.participants) ? entry.participants.join(", ") : entry.participants;
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${entry.teamID}</td>
+      <td>${entry.college || ""}</td>
+      <td>${entry.eventName || ""}</td>
+      <td>${participants}</td>
+      <td>₹${entry.fee}</td>
+      <td><button class="add-btn" onclick="addEvent()">Add</button></td>
+      <td><button class="delete-btn" onclick="deleteEvent(${index})">Delete</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("totalAmount").innerText = total;
+}
+
+
+  function deleteEvent(index) {
+    let data = getRegistrations();
+    data.splice(index, 1);
+    saveRegistrations(data);
+    renderTable();
+  }
+
+  function addEvent() {
+    window.location.href = "event.html";
+  }
+
+  function payNow() {
+  const data = getRegistrations();
+  if(data.length === 0) {
+    alert("No events registered!");
+    return;
+  }
+  const total = data.reduce((sum, e) => sum + Number(e.fee), 0);
+  // Pass the total amount as a URL parameter
+  window.location.href = `payment.html?amount=${total}`;
+}
+
+
+  // ===== Initialize table =====
+  renderTable();
+</script>
+
+</body>
+</html>

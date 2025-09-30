@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Registration - Unite 2025</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    .rules {
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: #2b2b2b;
+      color: white;
+    }
+
+    input:invalid {
+      border: 2px solid #ff4d4d;
+    }
+
+    .participant-form {
+      background: #262626;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    }
+
+    .participant-form h3 {
+      margin-bottom: 10px;
+      color: #ffcc00;
+    }
+
+    .btn {
+      margin: 10px 0;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .submit-btn {
+      background: linear-gradient(90deg, #28a745, #00c851);
+      color: white;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      box-shadow: 0 0 15px #00c851;
+    }
+
+    .fee {
+      margin: 15px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ffcc00;
+      text-align: center;
+    }
+
+    .other-college {
+      margin-top: 10px;
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 id="eventName">Event Name</h1>
+
+    <div class="rules">
+      <p><strong>Registration Fee:</strong> <span id="eventFee">--</span></p>
+      <p><em>(Rules will be displayed here later)</em></p>
+    </div>
+
+    <label for="numParticipants">Number of Participants:</label>
+    <input type="number" id="numParticipants" min="1" max="1" value="1" onchange="renderForms()">
+
+    <form id="registrationForm" method="post">
+      <div id="participantsContainer"></div>
+      <div class="fee">Total Fee: ₹<span id="totalFee">0</span></div>
+      <button type="submit" class="btn submit-btn">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    // ===== Event Data =====
+    const events = {
+      "Code Debugging": { fee: {single:200, team:300}, min:1, max:2 },
+      "Gaming - BGMI": { fee: {team:500}, min:4, max:4 },
+      "Gaming - Freefire": { fee: {team:500}, min:4, max:4 },
+      "Poster Making": { fee: {single:200, team:300}, min:1, max:2 },
+      "Reverse Coding": { fee: {single:200, team:300}, min:1, max:2 },
+      "UI/UX Design": { fee: {single:200, team:300}, min:1, max:2 },
+      "Art Attack": { fee: {team:200}, min:1, max:1 },
+      "Capturette": { fee: {team:200}, min:1, max:1 },
+      "Poetry Slam": { fee: {team:200}, min:1, max:1 },
+      "Beat Boxing": { fee: {team:200}, min:1, max:1 },
+      "Best Manager": { fee: {team:300}, min:1, max:1 },
+      "Singing - Solo (Indian)": { fee: {team:200}, min:1, max:1 },
+      "Singing - Solo (Western)": { fee: {team:200}, min:1, max:1 },
+      "Indian Solo Dance": { fee: {team:200}, min:1, max:1 },
+      "Western Solo Dance": { fee: {team:200}, min:1, max:1 },
+      "Financial Fitness Game": { fee: {team:300}, min:2, max:2 },
+      "Nail Art": { fee: {team:250}, min:2, max:2 },
+      "Reel Making": { fee: {team:300}, min:2, max:2 },
+      "Reverse Pitch": { fee: {team:300}, min:2, max:2 },
+      "Shark Tank Lite": { fee: {team:300}, min:2, max:2 },
+      "Tattoo Art / Face Painting": { fee: {team:250}, min:2, max:2 },
+      "Make Up": { fee: {team:250}, min:2, max:2 },
+      "Technical Quiz": { fee: {single:300, team:300}, min:1, max:2 },
+      "Business Quiz": { fee: {team:300}, min:2, max:2 },
+      "Rangoli": { fee: {team:300}, min:2, max:2 },
+      "Treasure Hunt": { fee: {team:300}, min:2, max:2 },
+      "Battle of Bands": { fee: {team:500}, min:4, max:6 },
+      "Fashion Show": { fee: {team:750}, min:6, max:12 },
+      "Indian Group Dance": { fee: {team:500}, min:4, max:8 },
+      "Western Group Dance": { fee: {team:500}, min:4, max:8 },
+      "Singing - Group (Indian)": { fee: {team:400}, min:2, max:5 },
+      "Singing - Group (Western)": { fee: {team:400}, min:2, max:5 },
+      "Mad Ads": { fee: {team:500}, min:4, max:6 },
+    };
+
+    const colleges = [
+      "Christ University", "St. Joseph's College", "Mount Carmel College", "BMS College of Engineering",
+      "RV College of Engineering", "PES University", "Dayananda Sagar College", "CMRIT", "MS Ramaiah Institute of Tech",
+      "Acharya Institute", "Garden City University", "Jain University", "Reva University", "Presidency College",
+      "New Horizon College", "Kristu Jayanti College", "Oxford College", "Global Academy of Tech", "Bangalore Institute of Tech",
+      "Nitte Meenakshi Institute", "T. John Institute", "Amrita School of Engineering", "HKBK College",
+      "SJB Institute of Tech", "Don Bosco Institute", "East Point College", "Cambridge Institute", "Bangalore University",
+      "KLE Technological University", "Alliance University", "Gopalan College", "Dr. Ambedkar Institute of Tech",
+      "Brindavan College", "Sapthagiri College", "HKBK Degree College", "Surana College", "JSS Academy", 
+      "Indo Asian Academy", "Kristu Jayanti University", "Cambridge University Bangalore", "Seshadripuram College",
+      "Vemana Institute", "RR Institute of Tech", "MVJ College", "RNS Institute of Tech", "Oxford University Bangalore",
+      "Syndicate Institute", "Sambhram Institute", "Sri Krishna Institute", "Vidyavardhaka College", "Other"
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventName = urlParams.get("event");
+    const event = events[eventName];
+
+    document.getElementById("eventName").innerText = eventName;
+    document.getElementById("numParticipants").min = event.min;
+    document.getElementById("numParticipants").max = event.max;
+    document.getElementById("numParticipants").value = event.min;
+
+    renderForms();
+
+    function renderForms() {
+      const container = document.getElementById("participantsContainer");
+      container.innerHTML = "";
+      const num = parseInt(document.getElementById("numParticipants").value);
+
+      let fee = 0;
+      if (event.fee.team && num > 1) fee = event.fee.team;
+      else fee = event.fee.single || event.fee.team;
+      document.getElementById("eventFee").innerText = `₹${fee}`;
+      document.getElementById("totalFee").innerText = fee;
+
+      for (let i = 1; i <= num; i++) {
+        const div = document.createElement("div");
+        div.className = "participant-form";
+        div.innerHTML = `<h3>Participant ${i}</h3>`;
+
+        if (i === 1) {
+          div.innerHTML += `
+            <label>College</label>
+            <select required onchange="toggleOtherCollege(this)">
+              ${colleges.map(c => `<option value="${c}">${c}</option>`).join("")}
+            </select>
+            <input type="text" class="other-college" placeholder="Enter your college" />
+            <label>Name</label><input type="text" required />
+            <label>Course</label><input type="text" required />
+            <label>WhatsApp Number</label><input type="tel" required pattern="\\d{10}" />
+            <label>Alternate Mobile Number</label><input type="tel" required pattern="\\d{10}" />
+            <label>Email ID</label><input type="email" required />
+          `;
+        } else {
+          div.innerHTML += `
+            <label>Name (Mandatory)</label><input type="text" required />
+            <label>Phone (Optional)</label><input type="tel" pattern="\\d{10}" />
+          `;
+        }
+
+        container.appendChild(div);
+      }
+    }
+
+    function toggleOtherCollege(select) {
+      const otherInput = select.nextElementSibling;
+      if (select.value === "Other") otherInput.style.display = "block";
+      else { otherInput.style.display = "none"; otherInput.value = ""; }
+    }
+
+    document.getElementById("registrationForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  // Gather participants
+  const participantDivs = this.querySelectorAll(".participant-form");
+  let participants = [];
+  let college = "";
+  participantDivs.forEach((div, i) => {
+    if (i === 0) {
+      // First participant (team leader)
+      const select = div.querySelector("select");
+      college = select.value === "Other" ? div.querySelector(".other-college").value : select.value;
+      const name = div.querySelectorAll("input")[1].value;
+      participants.push(name);
+    } else {
+      const name = div.querySelectorAll("input")[0].value;
+      participants.push(name);
+    }
+  });
+
+  const registration = {
+    teamID: "TEAM" + Date.now().toString(),
+    college: college,
+    eventName: eventName,
+    participants: participants,
+    fee: parseInt(document.getElementById("totalFee").innerText)
+  };
+
+  // Save to localStorage
+  let registrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+  registrations.push(registration);
+  localStorage.setItem("registrations", JSON.stringify(registrations));
+
+  alert(`✅ Registration submitted for ${eventName}`);
+  window.location.href = "event.html";
+});
+
+  </script>
+
+</body>
+</html>
