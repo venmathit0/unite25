@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Success</title>
+  <style>
+    body { background: #121212; color: #fff; font-family: 'Segoe UI', sans-serif;}
+    .container { max-width: 650px; margin: 50px auto; background: #1f1f1f; border-radius: 16px; padding: 40px 28px 30px 28px; text-align: center;}
+    .success { font-size: 2rem; font-weight: bold; color: #14ec83; margin-bottom: 7px;}
+    .small { font-size: 0.98rem; color: #ffc107; }
+    .regid { font-size: 1.1rem; margin: 18px 0 16px 0; color: #ff901a; font-weight: 600;}
+    .dl-btn { margin-top: 22px; background: linear-gradient(90deg, #28a745, #ee0979); color: white; border:none; border-radius: 22px; font-size: 1.09rem; font-weight:bold; padding: 13px 34px; cursor:pointer;}
+    table { margin: 17px auto 0 auto; background: #222; border-radius: 10px; border-collapse: collapse; }
+    th, td { padding: 13px 13px; text-align: left; border: 1px solid #444; }
+    th { background: #2d2d2d; color: #ffd800; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="success">Thank you for registering!<br/>Registration successful.</div>
+    <div class="small" style="margin-bottom:10px;">
+      Final confirmation will be completed once the payment has been verified.
+    </div>
+    <div class="regid" id="regId"></div>
+    <div id="proofSummary">
+      <table>
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>College Name</th>
+            <th>Participants</th>
+            <th>Team ID</th>
+          </tr>
+        </thead>
+        <tbody id="eventsTable"></tbody>
+      </table>
+    </div>
+    <button class="dl-btn" onclick="downloadProof()">Download Proof (PNG)</button>
+  </div>
+
+<script>
+  function generateRegId() {
+    return "REG2025" + Date.now().toString(36).toUpperCase().slice(-7);
+  }
+  const regId = generateRegId();
+  document.getElementById("regId").innerText = "Registration ID: " + regId;
+
+  const allRegistrations = JSON.parse(localStorage.getItem("registrations") || '[]');
+  const tb = document.getElementById("eventsTable");
+  if (allRegistrations.length === 0) {
+    tb.innerHTML = `<tr><td colspan="4">No registrations found.</td></tr>`;
+  } else {
+    allRegistrations.forEach(reg => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${reg.eventName}</td>
+        <td>${reg.college}</td>
+        <td>${Array.isArray(reg.participants) ? reg.participants.join(", ") : reg.participants}</td>
+        <td>${reg.teamID}</td>
+      `;
+      tb.appendChild(row);
+    });
+  }
+
+  function downloadProof() {
+    html2canvas(document.getElementById('proofSummary')).then(function(canvas) {
+      const link = document.createElement('a');
+      link.download = "Registration_Proof.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  function base64ToBlob(base64, type) {
+    const byteString = atob(base64.split(",")[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([intArray], { type: type });
+  }
+
+  async function sendToBackend() {
+    const registrations = JSON.parse(localStorage.getItem("registrations") || '[]');
+    const paymentMode = localStorage.getItem("paymentMode") || "online"; 
+    const txnId = localStorage.getItem("txnId") || "";
+    const totalAmount = localStorage.getItem("payment_total") || 0;
+
+    const invoiceCanvas = await html2canvas(document.querySelector('.container'));
+    const invoiceBlob = await new Promise(resolve => invoiceCanvas.toBlob(resolve));
+
+    const payload = {
+      registration_id: regId,
+      payment_mode: paymentMode,
+      payment_total: totalAmount,
+      transaction_id: txnId,
+      events: registrations
+    };
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(payload));
+    formData.append("invoice", invoiceBlob, `invoice_${regId}.png`);
+
+    const proofBase64 = localStorage.getItem("payment_proof");
+    if (proofBase64) {
+      const proofType = localStorage.getItem("payment_proof_type") || "image/png";
+      const proofName = localStorage.getItem("payment_proof_name") || "proof.png";
+      const proofBlob = base64ToBlob(proofBase64, proofType);
+      formData.append("payment_proof", proofBlob, proofName);
+    }
+
+    fetch("backend.php", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Server response:", data);
+        if (data.status === "success") {
+          alert("✅ Registration saved successfully!");
+        } else if (data.status === "partial") {
+          alert("⚠️ Some registrations failed.");
+        } else {
+          alert("❌ Error: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("❌ Failed to connect to server.");
+      });
+
+    localStorage.removeItem("payment_proof");
+    localStorage.removeItem("payment_proof_name");
+    localStorage.removeItem("payment_proof_type");
+    localStorage.removeItem("registrations");
+  }
+
+  sendToBackend();
+</script>
+</body>
+</html>

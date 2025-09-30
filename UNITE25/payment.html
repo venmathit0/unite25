@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pay via QR Code</title>
+  <style>
+    body { background:#121212; color:white; font-family:'Segoe UI',sans-serif; }
+    .container { max-width:420px;margin:60px auto;padding:36px;background:#1f1f1f;border-radius:15px;text-align:center; }
+    .amount { font-size:2rem;color:#ffcc00;margin-bottom:20px; }
+    .qr-code { margin:20px auto; }
+    .paid-btn { background:linear-gradient(90deg,#28a745,#00c851);color:white;border:none;padding:14px 35px;border-radius:25px;font-size:1.1rem;font-weight:bold;cursor:pointer;margin-top:24px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="amount">Total: ₹<span id="totalAmount"></span></div>
+    <div class="qr-code"><canvas id="qrCanvas"></canvas></div>
+    <p style="color:#ffcc00;">Scan using any UPI app.</p>
+    <button class="paid-btn" onclick="confirmPaid()">I have paid</button>
+  </div>
+  <script>
+    // Edit these details for your event org
+    const payeeVPA = "yourupiid@bank"; // <-- put your organization's UPI ID here
+    const payeeName = "Unite 2025"; // <-- event or org name
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get("amount") || 0;
+
+    document.getElementById("totalAmount").innerText = amount;
+
+    // UPI QR URI
+    const upiQR = `upi://pay?pa=${encodeURIComponent(payeeVPA)}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`;
+
+    QRCode.toCanvas(document.getElementById('qrCanvas'), upiQR, { width: 250 }, function (error) {
+      if (error) console.error(error);
+    });
+
+    function confirmPaid() {
+      window.location.href = "mode.html"; // Go to next success page
+    }
+  </script>
+</body>
+</html>

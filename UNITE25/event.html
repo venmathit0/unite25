@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unite 2025 - Events Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0d0d0d;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 40px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      margin: 30px 0 20px;
+      font-size: 1.8rem;
+      color: #ffcc00;
+      text-align: left;
+      padding-left: 10px;
+    }
+
+    .events-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .event-card {
+      background: #1a1a1a;
+      padding: 25px 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(255,106,0,0.7);
+    }
+
+    .event-card h3 {
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      color: #fff;
+    }
+
+    .register-btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .register-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255,106,0,0.8);
+    }
+
+    .bottom-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .bottom-buttons button {
+      padding: 15px 35px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .done-btn {
+      background: linear-gradient(90deg, #28a745, #00c851);
+      color: white;
+    }
+
+    .reset-btn {
+      background: linear-gradient(90deg, #ff4444, #cc0000);
+      color: white;
+    }
+
+    .bottom-buttons button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+
+    @media (max-width: 600px) {
+      .event-card {
+        padding: 20px 15px;
+      }
+
+      .register-btn {
+        width: 100%;
+      }
+
+      .bottom-buttons {
+        flex-direction: column;
+      }
+
+      .bottom-buttons button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Unite 2025 - Event Registration</h1>
+
+  <!-- 7 Star -->
+  <h2 style="text-align: center;">⭐ 7 Star Events</h2>
+  <div class="events-container">
+    <div class="event-card">
+      <h3>Fashion Show</h3>
+      <button class="register-btn" onclick="registerEvent('Fashion Show')">Register</button>
+    </div>
+  </div>
+
+  <!-- 5 Star -->
+  <h2 style="text-align: center;">⭐ 5 Star Events</h2>
+  <div class="events-container">
+    <div class="event-card"><h3>Gaming - BGMI</h3><button class="register-btn" onclick="registerEvent('Gaming - BGMI')">Register</button></div>
+    <div class="event-card"><h3>Gaming - Freefire</h3><button class="register-btn" onclick="registerEvent('Gaming - Freefire')">Register</button></div>
+    <div class="event-card"><h3>Battle of Bands</h3><button class="register-btn" onclick="registerEvent('Battle of Bands')">Register</button></div>
+    <div class="event-card"><h3>Indian Group Dance</h3><button class="register-btn" onclick="registerEvent('Indian Group Dance')">Register</button></div>
+    <div class="event-card"><h3>Western Group Dance</h3><button class="register-btn" onclick="registerEvent('Western Group Dance')">Register</button></div>
+    <div class="event-card"><h3>Mad Ads</h3><button class="register-btn" onclick="registerEvent('Mad Ads')">Register</button></div>
+  </div>
+
+  <!-- 4 Star -->
+  <h2 style="text-align: center;">⭐ 4 Star Events</h2>
+  <div class="events-container">
+    <div class="event-card"><h3>Code Debugging</h3><button class="register-btn" onclick="registerEvent('Code Debugging')">Register</button></div>
+    <div class="event-card"><h3>Reverse Coding</h3><button class="register-btn" onclick="registerEvent('Reverse Coding')">Register</button></div>
+    <div class="event-card"><h3>UI/UX Design (15 mins)</h3><button class="register-btn" onclick="registerEvent('UI/UX Design')">Register</button></div>
+    <div class="event-card"><h3>Financial Fitness Game</h3><button class="register-btn" onclick="registerEvent('Financial Fitness Game')">Register</button></div>
+    <div class="event-card"><h3>Reel Making</h3><button class="register-btn" onclick="registerEvent('Reel Making')">Register</button></div>
+    <div class="event-card"><h3>Reverse Pitch</h3><button class="register-btn" onclick="registerEvent('Reverse Pitch')">Register</button></div>
+    <div class="event-card"><h3>Shark Tank Lite</h3><button class="register-btn" onclick="registerEvent('Shark Tank Lite')">Register</button></div>
+    <div class="event-card"><h3>Technical Quiz</h3><button class="register-btn" onclick="registerEvent('Technical Quiz')">Register</button></div>
+    <div class="event-card"><h3>Singing - Group (Indian)</h3><button class="register-btn" onclick="registerEvent('Singing - Group (Indian)')">Register</button></div>
+    <div class="event-card"><h3>Singing - Group (Western)</h3><button class="register-btn" onclick="registerEvent('Singing - Group (Western)')">Register</button></div>
+    <div class="event-card"><h3>Best Manager</h3><button class="register-btn" onclick="registerEvent('Best Manager')">Register</button></div>
+    <div class="event-card"><h3>Business Quiz</h3><button class="register-btn" onclick="registerEvent('Business Quiz')">Register</button></div>
+    <div class="event-card"><h3>Rangoli</h3><button class="register-btn" onclick="registerEvent('Rangoli')">Register</button></div>
+    <div class="event-card"><h3>Treasure Hunt</h3><button class="register-btn" onclick="registerEvent('Treasure Hunt')">Register</button></div>
+  </div>
+
+  <!-- 3 Star -->
+  <h2 style="text-align: center;">⭐ 3 Star Events</h2>
+  <div class="events-container">
+    <div class="event-card"><h3>Poster Making</h3><button class="register-btn" onclick="registerEvent('Poster Making')">Register</button></div>
+    <div class="event-card"><h3>Art Attack (Sketching/Painting)</h3><button class="register-btn" onclick="registerEvent('Art Attack')">Register</button></div>
+    <div class="event-card"><h3>Capturette</h3><button class="register-btn" onclick="registerEvent('Capturette')">Register</button></div>
+    <div class="event-card"><h3>Nail Art</h3><button class="register-btn" onclick="registerEvent('Nail Art')">Register</button></div>
+    <div class="event-card"><h3>Poetry Slam</h3><button class="register-btn" onclick="registerEvent('Poetry Slam')">Register</button></div>
+    <div class="event-card"><h3>Tattoo Art / Face Painting</h3><button class="register-btn" onclick="registerEvent('Tattoo Art / Face Painting')">Register</button></div>
+    <div class="event-card"><h3>Make Up</h3><button class="register-btn" onclick="registerEvent('Make Up')">Register</button></div>
+    <div class="event-card"><h3>Beat Boxing</h3><button class="register-btn" onclick="registerEvent('Beat Boxing')">Register</button></div>
+    <div class="event-card"><h3>Indian Solo Dance</h3><button class="register-btn" onclick="registerEvent('Indian Solo Dance')">Register</button></div>
+    <div class="event-card"><h3>Western Solo Dance</h3><button class="register-btn" onclick="registerEvent('Western Solo Dance')">Register</button></div>
+    <div class="event-card"><h3>Singing - Solo (Indian)</h3><button class="register-btn" onclick="registerEvent('Singing - Solo (Indian)')">Register</button></div>
+    <div class="event-card"><h3>Singing - Solo (Western)</h3><button class="register-btn" onclick="registerEvent('Singing - Solo (Western)')">Register</button></div>
+  </div>
+
+  <!-- Bottom Buttons -->
+  <div class="bottom-buttons">
+    <button class="done-btn" onclick="doneRegistration()">Done Registration</button>
+    <button class="reset-btn" onclick="resetRegistration()">Reset</button>
+  </div>
+
+  <script>
+    let registeredEvents = [];
+
+    function registerEvent(eventName) {
+
+  let events = JSON.parse(localStorage.getItem("registeredEvents")) || [];
+  if (!events.includes(eventName)) {
+    events.push(eventName);
+    localStorage.setItem("registeredEvents", JSON.stringify(events));
+  }
+  
+  // Redirect to event-details page
+  const url = `event-details.html?event=${encodeURIComponent(eventName)}`;
+  window.location.href = url;
+}
+
+
+   function doneRegistration() {
+  // Get events from localStorage
+  let events = JSON.parse(localStorage.getItem("registeredEvents")) || [];
+
+  if (events.length === 0) {
+    alert("No events selected!");
+    return;
+  }
+
+  // Already stored in localStorage, just redirect to table page
+  window.location.href = "table.html";
+}
+
+    function resetRegistration() {
+      registeredEvents = [];
+      localStorage.removeItem("registeredEvents");
+      alert("Your selections have been reset.");
+    }
+  </script>
+
+</body>
+</html>
